@@ -8,11 +8,11 @@ generator client {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
   password String
-  role  Role
+  role     Role
 }
 
 enum Role {
@@ -21,7 +21,7 @@ enum Role {
 }
 
 model Pelanggan {
-  PelangganID  Int     @id @default(autoincrement())
+  PelangganID  Int        @id @default(autoincrement())
   NamaPelanggan String
   Alamat       String?
   NomorTelepon String?
@@ -33,8 +33,9 @@ model Penjualan {
   TanggalPenjualan DateTime
   TotalHarga       Decimal          @default(0.0)
   PelangganID      Int
-  pelanggan        Pelanggan        @relation(fields: [PelangganID], references: [PelangganID])
+  Pelanggan        Pelanggan        @relation(fields: [PelangganID], references: [PelangganID])
   detailPenjualan  DetailPenjualan[]
+  orders           Order[]          @relation("PenjualanOrders") // Relasi dengan Order
 }
 
 model DetailPenjualan {
@@ -52,5 +53,18 @@ model Produk {
   NamaProduk String
   Harga      Decimal  @default(0.0)
   Stok       Int
+  FotoProduk String?
   detailPenjualan DetailPenjualan[]
+  orders      Order[]  // Relasi terbalik ke model Order
+}
+
+model Order {
+  OrderID         Int               @id @default(autoincrement())
+  PenjualanID     Int?
+  ProdukID        Int
+  JumlahProduk    Int
+  Subtotal        Decimal           @default(0.0)
+  penjualan       Penjualan?        @relation("PenjualanOrders", fields: [PenjualanID], references: [PenjualanID])
+  produk          Produk            @relation(fields: [ProdukID], references: [ProdukID])
+  createdAt       DateTime          @default(now())
 }
