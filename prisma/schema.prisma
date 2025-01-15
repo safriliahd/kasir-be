@@ -1,0 +1,56 @@
+datasource db {
+  provider = "sqlite" 
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  password String
+  role  Role
+}
+
+enum Role {
+  ADMIN
+  PETUGAS
+}
+
+model Pelanggan {
+  PelangganID  Int     @id @default(autoincrement())
+  NamaPelanggan String
+  Alamat       String?
+  NomorTelepon String?
+  penjualan    Penjualan[]
+}
+
+model Penjualan {
+  PenjualanID     Int               @id @default(autoincrement())
+  TanggalPenjualan DateTime
+  TotalHarga       Decimal          @default(0.0)
+  PelangganID      Int
+  pelanggan        Pelanggan        @relation(fields: [PelangganID], references: [PelangganID])
+  detailPenjualan  DetailPenjualan[]
+}
+
+model DetailPenjualan {
+  DetailID     Int      @id @default(autoincrement())
+  PenjualanID  Int
+  ProdukID     Int
+  JumlahProduk Int
+  Subtotal     Decimal @default(0.0)
+  penjualan    Penjualan @relation(fields: [PenjualanID], references: [PenjualanID])
+  produk       Produk    @relation(fields: [ProdukID], references: [ProdukID])
+}
+
+model Produk {
+  ProdukID   Int      @id @default(autoincrement())
+  NamaProduk String
+  Harga      Decimal  @default(0.0)
+  Stok       Int
+  detailPenjualan DetailPenjualan[]
+}
