@@ -3,7 +3,8 @@ const authController = require('../controllers/authController');
 const pelangganController = require('../controllers/pelangganController');
 const produkController = require('../controllers/produkController');
 const orderController = require('../controllers/orderController');
-const  detailPenjualanController = require('../controllers/detailPenjualanController');
+const detailPenjualanController = require('../controllers/detailPenjualanController');
+const penjualanController = require('../controllers/penjualanController');
 const upload = require('../middlewares/uploadMiddleware');
 const { isAdmin, isLoggedIn, isAdminOrPetugas } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -36,6 +37,11 @@ router.get('/allOrders', isLoggedIn, isAdminOrPetugas, orderController.getAllOrd
 
 // Route to delete orders based on PenjualanID
 router.delete('/deleteOrder/:penjualanID', isLoggedIn, isAdminOrPetugas, orderController.deleteOrderByPenjualanID); 
+
+// Routes for Penjualan
+router.get('/penjualan/:PenjualanID', isLoggedIn, isAdminOrPetugas, penjualanController.getPenjualanByPenjualanID);
+router.get('/allPenjualan', isLoggedIn, isAdminOrPetugas, penjualanController.getAllPenjualan);
+
 
 //Get detail penjualan by penjualanID
 router.get('/detailPenjualan/:PenjualanID', isLoggedIn, isAdminOrPetugas, detailPenjualanController.getDetailPenjualanByPenjualanID);

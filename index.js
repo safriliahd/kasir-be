@@ -9,9 +9,14 @@ const app = express();
 app.use(express.json());
 app.use(
   session({
-    secret: '290607sfrlhd',
+    secret: '290607sfrlhd', // Kunci rahasia
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 1 bulan dalam milidetik
+      httpOnly: true, 
+      secure: process.env.NODE_ENV === 'production', 
+    },
   })
 );
 
@@ -23,5 +28,5 @@ app.use('/petugas', petugasRoutes);
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
