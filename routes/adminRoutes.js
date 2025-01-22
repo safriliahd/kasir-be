@@ -3,6 +3,7 @@ const authController = require('../controllers/authController');
 const pelangganController = require('../controllers/pelangganController');
 const produkController = require('../controllers/produkController');
 const orderController = require('../controllers/orderController');
+const  detailPenjualanController = require('../controllers/detailPenjualanController');
 const upload = require('../middlewares/uploadMiddleware');
 const { isAdmin, isLoggedIn, isAdminOrPetugas } = require('../middlewares/authMiddleware');
 const router = express.Router();
@@ -16,10 +17,10 @@ router.get('/users', isLoggedIn, isAdmin, authController.getAllUsers);
 
 
 // Routes for Pelanggan
-router.post('/createPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.createPelanggan); // Admin & Petugas
-router.get('/allPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.getAllPelanggan); // Admin & Petugas
-router.put('/updatePelanggan/:id', isLoggedIn, isAdmin, pelangganController.updatePelanggan); // Admin only
-router.delete('/deletePelanggan/:id', isLoggedIn, isAdmin, pelangganController.deletePelanggan); // Admin only
+router.post('/createPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.createPelanggan);
+router.get('/allPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.getAllPelanggan); 
+router.put('/updatePelanggan/:id', isLoggedIn, isAdmin, pelangganController.updatePelanggan); 
+router.delete('/deletePelanggan/:id', isLoggedIn, isAdmin, pelangganController.deletePelanggan); 
 
 // Routes for Produk
 router.post('/createProduk', isLoggedIn, isAdminOrPetugas, upload.single('FotoProduk'), produkController.createProduk);
@@ -30,9 +31,15 @@ router.delete('/deleteProduk/:id', isLoggedIn, isAdmin, produkController.deleteP
 
 
 // Order Routes
-router.post('/createOrder', isLoggedIn, isAdminOrPetugas, orderController.createOrderWithPenjualan); // Create orders
-// router.post('/finalizePenjualan', isLoggedIn, isAdminOrPetugas, orderController.finalizePenjualan); // Finalize penjualan
-router.get('/allOrders', isLoggedIn, isAdminOrPetugas, orderController.getAllOrders); // Get all orders
+router.post('/createOrder', isLoggedIn, isAdminOrPetugas, orderController.createOrderWithPenjualan); 
+router.get('/allOrders', isLoggedIn, isAdminOrPetugas, orderController.getAllOrders);
+
+// Route to delete orders based on PenjualanID
+router.delete('/deleteOrder/:penjualanID', isLoggedIn, isAdminOrPetugas, orderController.deleteOrderByPenjualanID); 
+
+//Get detail penjualan by penjualanID
+router.get('/detailPenjualan/:PenjualanID', isLoggedIn, isAdminOrPetugas, detailPenjualanController.getDetailPenjualanByPenjualanID);
+
 
 
 module.exports = router;

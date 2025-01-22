@@ -20,23 +20,39 @@ enum Role {
   PETUGAS
 }
 
+model Order {
+  OrderID         Int               @id @default(autoincrement())
+  PenjualanID     Int?
+  ProdukID        Int
+  PelangganID     Int?              
+  JumlahProduk    Int
+  Subtotal        Decimal           @default(0.0)
+  penjualan       Penjualan?        @relation("PenjualanOrders", fields: [PenjualanID], references: [PenjualanID])
+  produk          Produk            @relation(fields: [ProdukID], references: [ProdukID])
+  pelanggan       Pelanggan?        @relation(fields: [PelangganID], references: [PelangganID]) 
+  createdAt       DateTime          @default(now())
+}
+
+
 model Pelanggan {
-  PelangganID  Int        @id @default(autoincrement())
-  NamaPelanggan String
-  Alamat       String?
-  NomorTelepon String?
-  penjualan    Penjualan[]
+  PelangganID      Int               @id @default(autoincrement())
+  NamaPelanggan    String
+  Alamat           String?
+  NomorTelepon     String?
+  penjualan        Penjualan[]
+  orders           Order[]           
 }
 
 model Penjualan {
-  PenjualanID     Int               @id @default(autoincrement())
+  PenjualanID      Int               @id @default(autoincrement())
   TanggalPenjualan DateTime
-  TotalHarga       Decimal          @default(0.0)
+  TotalHarga       Decimal           @default(0.0)
   PelangganID      Int
-  Pelanggan        Pelanggan        @relation(fields: [PelangganID], references: [PelangganID])
+  Pelanggan        Pelanggan         @relation(fields: [PelangganID], references: [PelangganID])
   detailPenjualan  DetailPenjualan[]
-  orders           Order[]          @relation("PenjualanOrders") // Relasi dengan Order
+  orders           Order[]           @relation("PenjualanOrders") 
 }
+
 
 model DetailPenjualan {
   DetailID     Int      @id @default(autoincrement())
@@ -55,16 +71,5 @@ model Produk {
   Stok       Int
   FotoProduk String?
   detailPenjualan DetailPenjualan[]
-  orders      Order[]  // Relasi terbalik ke model Order
-}
-
-model Order {
-  OrderID         Int               @id @default(autoincrement())
-  PenjualanID     Int?
-  ProdukID        Int
-  JumlahProduk    Int
-  Subtotal        Decimal           @default(0.0)
-  penjualan       Penjualan?        @relation("PenjualanOrders", fields: [PenjualanID], references: [PenjualanID])
-  produk          Produk            @relation(fields: [ProdukID], references: [ProdukID])
-  createdAt       DateTime          @default(now())
+  orders      Order[]  
 }
