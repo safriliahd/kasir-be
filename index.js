@@ -1,10 +1,16 @@
 const express = require('express');
 const session = require('express-session');
+const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const petugasRoutes = require('./routes/petugasRoutes');
 
 const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:5173', // Mengizinkan permintaan dari frontend
+  credentials: true, // Mengizinkan cookies (jika ada)
+}));
 
 app.use(express.json());
 app.use(

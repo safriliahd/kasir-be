@@ -4,71 +4,65 @@ const bcrypt = require('bcrypt');
 const prisma = new PrismaClient();
 
 module.exports = {
+  // Register
   register: async (req, res) => {
     const { name, email, password, role } = req.body;
 
-    // Validate that role is either 'ADMIN' or 'PETUGAS'
-    if (!role || (role !== 'ADMIN' && role !== 'PETUGAS')) {
-      return res.status(400).json({ error: 'Invalid role. Only "ADMIN" or "PETUGAS" are allowed.' });
+    if (!['ADMIN', 'PETUGAS'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
     }
 
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          role, // Use the role from the request body
-          password: hashedPassword,
-        },
+        data: { name, email, password: hashedPassword, role },
       });
-      res.status(201).json({ message: `${role} registered successfully`, user });
+      res.status(201).json({ message: 'User registered successfully', user });
     } catch (error) {
-      res.status(500).json({ error: 'Registration failed', details: error.message });
+      res.status(500).json({ error: error.message });
     }
   },
 
+  // Login
   login: async (req, res) => {
     const { email, password } = req.body;
+
     try {
       const user = await prisma.user.findUnique({ where: { email } });
-
       if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+        return res.status(401).json({ error: 'Invalid email or password' });
       }
 
+      // Set session data
       req.session.userId = user.id;
       req.session.role = user.role;
-      res.json({ message: `${user.role} logged in successfully`, user });
+
+      // Redirect based on role
+      if (user.role === 'ADMIN') {
+        return res.json({ message: 'Logged in as ADMIN', redirect: '/admin' });
+      } else if (user.role === 'PETUGAS') {
+        return res.json({ message: 'Logged in as PETUGAS', redirect: '/petugas' });
+      }
     } catch (error) {
-      res.status(500).json({ error: 'Login failed', details: error.message });
+      res.status(500).json({ error: error.message });
     }
   },
 
+  // Logout
   logout: (req, res) => {
     req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ error: 'Logout failed', details: err.message });
-      }
+      if (err) return res.status(500).json({ error: 'Failed to log out' });
       res.json({ message: 'Logged out successfully' });
     });
   },
 
+  // Get all users
   getAllUsers: async (req, res) => {
     try {
-      const users = await prisma.user.findMany({
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          role: true,
-        },
-      });
-      res.json({ users });
+      const users = await prisma.user.findMany();
+      res.json(users);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch users', details: error.message });
+      res.status(500).json({ error: error.message });
     }
   },
-  
 };
-
