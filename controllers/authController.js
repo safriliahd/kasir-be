@@ -39,9 +39,9 @@ module.exports = {
 
       // Redirect based on role
       if (user.role === 'ADMIN') {
-        return res.json({ message: 'Logged in as ADMIN', redirect: '/admin' });
+        return res.json({ message: 'Logged in as ADMIN', redirect: '/admin', role: user.role });
       } else if (user.role === 'PETUGAS') {
-        return res.json({ message: 'Logged in as PETUGAS', redirect: '/petugas' });
+        return res.json({ message: 'Logged in as PETUGAS', redirect: '/petugas', role: user.role });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
