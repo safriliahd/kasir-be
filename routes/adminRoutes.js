@@ -28,6 +28,8 @@ router.post('/createProduk', isLoggedIn, isAdminOrPetugas, upload.single('FotoPr
 router.get('/allProduk', isLoggedIn, isAdminOrPetugas, produkController.getAllProduk);
 router.put('/updateProduk/:id', isLoggedIn, isAdmin, upload.single('FotoProduk'), produkController.updateProduk);
 router.delete('/deleteProduk/:id', isLoggedIn, isAdmin, produkController.deleteProduk);
+router.get('/produk/:id', isLoggedIn, isAdminOrPetugas, produkController.getProdukById);
+
 
 
 

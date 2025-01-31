@@ -13,8 +13,10 @@ router.get('/', isAdminOrPetugas, (req, res) => {
 });
 
 // Routes for Pelanggan
-router.post('/createPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.createPelanggan); // Admin & Petugas
-router.get('/allPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.getAllPelanggan); // Admin & Petugas
+router.post('/createPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.createPelanggan); 
+router.get('/allPelanggan', isLoggedIn, isAdminOrPetugas, pelangganController.getAllPelanggan); 
+router.put('/updatePelanggan/:id', isLoggedIn, isAdminOrPetugas, pelangganController.updatePelanggan); 
+router.delete('/deletePelanggan/:id', isLoggedIn, isAdminOrPetugas, pelangganController.deletePelanggan); 
 
 // Routes for Produk
 router.post('/createProduk', isLoggedIn, isAdminOrPetugas, upload.single('FotoProduk'), produkController.createProduk);
