@@ -21,7 +21,7 @@ router.delete('/deletePelanggan/:id', isLoggedIn, isAdminOrPetugas, pelangganCon
 // Routes for Produk
 router.post('/createProduk', isLoggedIn, isAdminOrPetugas, upload.single('FotoProduk'), produkController.createProduk);
 router.get('/allProduk', isLoggedIn, isAdminOrPetugas, produkController.getAllProduk);
-
+router.get('/produk/:id', isLoggedIn, isAdminOrPetugas, produkController.getProdukById);
 
 // Order Routes
 router.post('/createOrder', isLoggedIn, isAdminOrPetugas, orderController.createOrderWithPenjualan); 
@@ -31,6 +31,7 @@ router.get('/allOrders', isLoggedIn, isAdminOrPetugas, orderController.getAllOrd
 router.delete('/deleteOrder/:penjualanID', isLoggedIn, isAdminOrPetugas, orderController.deleteOrderByPenjualanID); 
 
 // Routes for Penjualan
+router.get('/allPenjualan', isLoggedIn, isAdminOrPetugas, penjualanController.getAllPenjualan);
 router.get('/penjualan/:PenjualanID', isLoggedIn, isAdminOrPetugas, penjualanController.getPenjualanByPenjualanID);
 
 //Get detail penjualan by penjualanID

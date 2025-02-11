@@ -16,27 +16,28 @@ const createOrderWithPenjualan = async (req, res) => {
       data: {
         PelangganID,
         TanggalPenjualan: new Date(TanggalPenjualan),
-        TotalHarga: 0, 
+        TotalHarga: 0,
       },
     });
 
-    // Create order and DetailPenjualan records
+
     const createdOrders = await prisma.order.createMany({
       data: products.map(product => ({
         PenjualanID: penjualan.PenjualanID,
         ProdukID: product.ProdukID,
-        PelangganID, 
+        PelangganID,
         JumlahProduk: product.JumlahProduk,
-        Subtotal: product.JumlahProduk * product.Harga, 
+        Subtotal: product.JumlahProduk * product.Harga,
       })),
     });
+
 
     const createdDetailPenjualan = await prisma.detailPenjualan.createMany({
       data: products.map(product => ({
         PenjualanID: penjualan.PenjualanID,
         ProdukID: product.ProdukID,
         JumlahProduk: product.JumlahProduk,
-        Subtotal: product.JumlahProduk * product.Harga, 
+        Subtotal: product.JumlahProduk * product.Harga,
       })),
     });
 
@@ -69,7 +70,7 @@ const createOrderWithPenjualan = async (req, res) => {
       message: 'Order and Penjualan created successfully',
       penjualan,
       createdOrdersCount: createdOrders.count,
-      createdDetailPenjualanCount: createdDetailPenjualan.count, 
+      createdDetailPenjualanCount: createdDetailPenjualan.count,
       totalHarga,
     });
   } catch (error) {
@@ -83,9 +84,9 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await prisma.order.findMany({
       include: {
-        produk: true, 
+        produk: true,
         penjualan: true,
-        pelanggan: true, 
+        pelanggan: true,
       },
     });
     res.status(200).json(orders);

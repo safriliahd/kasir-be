@@ -22,9 +22,9 @@ enum Role {
 
 model Order {
   OrderID         Int               @id @default(autoincrement())
-  PenjualanID     Int?
+  PenjualanID     Int
   ProdukID        Int
-  PelangganID     Int?              
+  PelangganID     Int              
   JumlahProduk    Int
   Subtotal        Decimal           @default(0.0)
   penjualan       Penjualan?        @relation("PenjualanOrders", fields: [PenjualanID], references: [PenjualanID])
